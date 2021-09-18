@@ -24,6 +24,8 @@ type
     function EchoString(Value: string): string;
     function ReverseString(Value: string): string;
     function ValidaUsuario(const Usuario,Clave: string): boolean;
+  public
+    function Usuario(const Usuario,Clave: string): TJSONObject;
   end;
 {$METHODINFO OFF}
 
@@ -44,8 +46,12 @@ begin
 end;
 
 function TServerMethods1.ValidaUsuario(const Usuario, Clave: string): boolean;
+var
+  FDQry: TFDQuery;
 begin
   Result:=false;
+  FDQry:=TFDQuery.Create(nil);
+  FDQry.Connection:=FDConnection1;
   FDQ_Login.Active:=false;
   FDQ_Login.Params[0].Value:=Usuario;
   FDQ_Login.Params[1].Value:=Clave;
@@ -54,6 +60,13 @@ begin
   Result:=not FDQ_Login.IsEmpty;
   {if not FDQ_Login.IsEmpty then
     Result:=true;}
+end;
+
+function TServerMethods1.Usuario(const Usuario,Clave: string): TJSONObject;
+var
+  FDQry: TFDQuery;
+begin
+
 end;
 
 end.
