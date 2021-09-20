@@ -9,7 +9,7 @@ uses
   DataSnap.DSAuth,
   Datasnap.DSProxyJavaScript, IPPeerServer, Datasnap.DSMetadata,
   Datasnap.DSServerMetadata, Datasnap.DSClientMetadata, Datasnap.DSCommonServer,
-  Datasnap.DSHTTP;
+  Datasnap.DSHTTP, System.JSON, Data.DBXCommon;
 
 type
   TWebModule1 = class(TWebModule)
@@ -33,6 +33,9 @@ type
       const AFileName: string; Request: TWebRequest; Response: TWebResponse;
       var Handled: Boolean);
     procedure WebModuleCreate(Sender: TObject);
+    procedure DSHTTPWebDispatcher1FormatResult(Sender: TObject;
+      var ResultVal: TJSONValue; const Command: TDBXCommand;
+      var Handled: Boolean);
   private
     { Private declarations }
     FServerFunctionInvokerAction: TWebActionItem;
@@ -50,6 +53,19 @@ implementation
 {$R *.dfm}
 
 uses ServerMethodsUnit1, Web.WebReq;
+
+procedure TWebModule1.DSHTTPWebDispatcher1FormatResult(Sender: TObject;
+  var ResultVal: TJSONValue; const Command: TDBXCommand; var Handled: Boolean);
+var
+  Aux: TJsonValue;
+begin
+  //para eliminar el indicador de array []:
+  Aux:=ResultVal;
+  ResultVal:=(Aux as TJsonArray).Remove(0);
+  FreeAndNil(Aux);
+  //para eliminar la etiqueta result:
+  Handled:=true;
+end;
 
 procedure TWebModule1.DSServerClass1GetClass(
   DSServerClass: TDSServerClass; var PersistentClass: TPersistentClass);
