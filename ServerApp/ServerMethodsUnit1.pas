@@ -2,13 +2,14 @@
 
 interface
 
-uses System.SysUtils, System.Classes, System.Json,
-    Datasnap.DSServer, Datasnap.DSAuth, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+uses System.SysUtils, System.Classes, System.Json, Data.FireDACJSONReflect,
+  Datasnap.DSServer, Datasnap.DSAuth, FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
   FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Phys.FB,
   FireDAC.Phys.FBDef, FireDAC.VCLUI.Wait, Data.DB, FireDAC.Comp.Client,
   FireDAC.Stan.Param, FireDAC.DatS, FireDAC.DApt.Intf, FireDAC.DApt,
-  FireDAC.Comp.DataSet, FireDAC.Comp.UI, FireDAC.Phys.IBBase;
+  FireDAC.Comp.DataSet, FireDAC.Comp.UI, FireDAC.Phys.IBBase,
+  FireDAC.Stan.StorageJSON, FireDAC.Stan.StorageBin;
 
 type
 {$METHODINFO ON}
@@ -17,17 +18,21 @@ type
     FDPhysFBDriverLink1: TFDPhysFBDriverLink;
     FDGUIxWaitCursor1: TFDGUIxWaitCursor;
     FDQ_Login: TFDQuery;
+    FDStanStorageBinLink1: TFDStanStorageBinLink;
+    FDStanStorageJSONLink1: TFDStanStorageJSONLink;
   private
     { Private declarations }
   public
     { Public declarations }
+    function DB2Json(const AData: TFDQuery): TJSONObject;
     function EchoString(Value: string): string;
     function ReverseString(Value: string): string;
     function ValidaUsuario(const Usuario,Clave: string): boolean;
   public
-    function DB2Json(const AData: TFDQuery): TJSONObject;
     function Usuario(const Usuario,Clave: string): TJSONObject;
     function Habitaciones: TJSONObject;
+    function GetUsuario(const Usuario,Clave: string): TFDJSONDataSets;
+    function GetHabitaciones: TFDJSONDataSets;
   end;
 {$METHODINFO OFF}
 
@@ -132,6 +137,33 @@ begin
   if not FDQry.IsEmpty then Result:=DB2Json(FDQry)
   else Result.AddPair('ERROR: ','No existen habitaciones');
   FreeAndNil(FDQry);
+end;
+
+function TServerMethods1.GetHabitaciones: TFDJSONDataSets;
+var
+  FDQry: TFDQuery;
+begin
+  FDQry:=TFDQuery.Create(nil);
+  FDQry.Connection:=FDConnection1;
+  FDQry.SQL.Text:=SQL_Rack;
+  Result:=TFDJSONDataSets.Create;
+  TFDJSONDataSetsWriter.ListAdd(Result,'Habitaciones',FDQry);
+end;
+
+function TServerMethods1.GetUsuario(const Usuario,
+  Clave: string): TFDJSONDataSets;
+var
+  FDQry: TFDQuery;
+begin
+  FDQry:=TFDQuery.Create(nil);
+  FDQry.Connection:=FDConnection1;
+  FDQry.SQL.Text:=SQL_Login;
+  FDQry.Active:=false;
+  FDQry.Params[0].Value:=Usuario;
+  FDQry.Params[1].Value:=Clave;
+  FDQry.Prepare;
+  Result:=TFDJSONDataSets.Create;
+  TFDJSONDataSetsWriter.ListAdd(Result,'Usuarios',FDQry);
 end;
 
 end.

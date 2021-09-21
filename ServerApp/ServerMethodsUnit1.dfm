@@ -47,4 +47,12 @@ object ServerMethods1: TServerMethods1
         Size = 100
       end>
   end
+  object FDStanStorageBinLink1: TFDStanStorageBinLink
+    Left = 176
+    Top = 120
+  end
+  object FDStanStorageJSONLink1: TFDStanStorageJSONLink
+    Left = 288
+    Top = 120
+  end
 end
