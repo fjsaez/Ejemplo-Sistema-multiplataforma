@@ -24,29 +24,6 @@ object ServerMethods1: TServerMethods1
     Left = 288
     Top = 40
   end
-  object FDQ_Login: TFDQuery
-    Connection = FDConnection1
-    SQL.Strings = (
-      'select * '
-      'from Empleados e'
-      'where e.Usuario = :usr and e.Clave = :cve'
-      'rows 1')
-    Left = 56
-    Top = 112
-    ParamData = <
-      item
-        Name = 'USR'
-        DataType = ftString
-        ParamType = ptInput
-        Size = 25
-      end
-      item
-        Name = 'CVE'
-        DataType = ftString
-        ParamType = ptInput
-        Size = 100
-      end>
-  end
   object FDStanStorageBinLink1: TFDStanStorageBinLink
     Left = 176
     Top = 120

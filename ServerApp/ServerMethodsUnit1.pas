@@ -17,7 +17,6 @@ type
     FDConnection1: TFDConnection;
     FDPhysFBDriverLink1: TFDPhysFBDriverLink;
     FDGUIxWaitCursor1: TFDGUIxWaitCursor;
-    FDQ_Login: TFDQuery;
     FDStanStorageBinLink1: TFDStanStorageBinLink;
     FDStanStorageJSONLink1: TFDStanStorageJSONLink;
   private
@@ -91,18 +90,8 @@ begin
   FDQry.Params[1].Value:=Clave;
   FDQry.Prepare;
   FDQry.Open;
-
   Result:=not FDQry.IsEmpty;
   FreeAndNil(FDQry);
-
-  {FDQ_Login.Active:=false;
-  FDQ_Login.Params[0].Value:=Usuario;
-  FDQ_Login.Params[1].Value:=Clave;
-  FDQ_Login.Prepare;
-  FDQ_Login.Open;
-  Result:=not FDQ_Login.IsEmpty;
-  if not FDQ_Login.IsEmpty then
-    Result:=true;}
 end;
 
 function TServerMethods1.Usuario(const Usuario,Clave: string): TJSONObject;
